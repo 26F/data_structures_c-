@@ -201,7 +201,7 @@ void LinkedList::insertNodeAtIndex(int index, int value)
 	// If temp is NULL at this point it means
 	// that head was NULL when index wasn't zero.
 	// so we clean up new node.
-	if (count > index || temp == NULL) {
+	if (temp == NULL) {
 
 		delete new_node;
 		return ;
@@ -288,15 +288,6 @@ void LinkedList::deleteValueAtIndex(int index)
 
 		temp = temp->getNext();
 		count++;
-
-	}
-
-
-	// if temp NULL enctouered index was too large
-	// and that node does not exist.
-	if (temp == NULL) {
-
-		return ;
 
 	}
 
