@@ -151,12 +151,12 @@ void LinkedList::deleteTailNode(void)
 	if (prev != NULL) {
 
 		// e.g set it NULL
-		prev->setNext(temp);
+		prev->setNext(NULL);
 
 	} else {
 
 		// We deleted head and set it NULL
-		head = temp;
+		head = NULL;
 
 	}
 
@@ -186,49 +186,41 @@ void LinkedList::insertNodeAtIndex(int index, int value)
 	
 	int count = 1;
 
-	// if head is NULL and index is zero
-	// set head to point to new node.
-	if (head == NULL && index == 0) {
 
-			head = new_node;		
+	// If either of these conditions are broken, we
+	// either have reached the index or there is no
+	// such index since node null before reaching. 
+	while (temp != NULL && count < index) {
 
-	} else {
-
-		// If either of these conditions are broken, we
-		// either have reached the index or there is no
-		// such index since node null before reaching. 
-		while (temp != NULL && count < index) {
-
-			temp = temp->getNext();
-			count++;
-
-		}
-
-
-		// If temp is NULL at this point it means
-		// that head was NULL when index wasn't zero.
-		// so we clean up new node.
-		if (count > index || temp == NULL) {
-
-			delete new_node;
-			return ;
-
-		}
-
-
-		// assign a new node to the linked list
-		new_node->setNext(temp->getNext());
-		temp->setNext(new_node);
+		temp = temp->getNext();
+		count++;
 
 	}
+
+
+	// If temp is NULL at this point it means
+	// that head was NULL when index wasn't zero.
+	// so we clean up new node.
+	if (count > index || temp == NULL) {
+
+		delete new_node;
+		return ;
+
+	}
+
+
+	// assign a new node to the linked list
+	new_node->setNext(temp->getNext());
+	temp->setNext(new_node);
 }
 
 
-
+// simply traverse the linked list 
 int LinkedList::atIndex(int index)
 {
 
 
+	// if valid index, return -1
 	if (index < 0) {
 
 		return -1;
@@ -245,20 +237,22 @@ int LinkedList::atIndex(int index)
 
 	}
 
-
+	// index is outside length of list
 	if (count < index) {
 
 		return -1;
 
 	}
 
-
+	// we've reached the index, and not null so 
+	// return the value
 	if (temp != NULL) {
 
 		return temp->getValue();
 
 	} else {
 
+		// the index was larger than the length of the list.
 		return -1;
 
 	}
@@ -266,7 +260,8 @@ int LinkedList::atIndex(int index)
 }
 
 
-
+// traverse the linked list and remove a node at a 
+// given index.
 void LinkedList::deleteValueAtIndex(int index)
 {
 
@@ -275,6 +270,7 @@ void LinkedList::deleteValueAtIndex(int index)
 
 	}
 
+	// since head node is the first item in the list
 	if (index == 0) {
 		deleteHeadNode();
 		return ;
@@ -287,6 +283,7 @@ void LinkedList::deleteValueAtIndex(int index)
 
 	int count = 1;
 
+	// iterate through the linked list.
 	while (temp != NULL && count < index) {
 
 		temp = temp->getNext();
@@ -294,22 +291,28 @@ void LinkedList::deleteValueAtIndex(int index)
 
 	}
 
-	if (count < index || temp == NULL) {
+
+	// if temp NULL enctouered index was too large
+	// and that node does not exist.
+	if (temp == NULL) {
 
 		return ;
 
 	}
 
+	// get the node we are going to delete
 	target = temp->getNext();
 
 
 	if (target != NULL) {
 
+		// stitch the linked list together
 		temp->setNext(target->getNext());
 		delete target;
 
 	} else {
 
+		// the target node for deletion was already null
 		return ;
 
 	}
@@ -317,10 +320,10 @@ void LinkedList::deleteValueAtIndex(int index)
 }
 
 
-
+// delete a node by value
 void LinkedList::deleteNode(int value)
 {
-
+	// if the linked list is empty just return.
 	if (head == NULL) {
 
 		return ;
@@ -328,6 +331,8 @@ void LinkedList::deleteNode(int value)
 	}	
 
 
+	// if the head node is the value we are looking
+	// for, delete the head node.
 	if (head->getValue() == value) {
 
 		deleteHeadNode();
@@ -339,20 +344,12 @@ void LinkedList::deleteNode(int value)
 	Node* temp = head;
 	Node* target = NULL;
 
-
+	// 
 	while (temp->getNext() != NULL && temp->getNext()->getValue() != value) {
 
 		temp = temp->getNext();
 
 	}
-
-
-	if (temp == NULL) {
-
-		return ;
-
-	}
-
 
 	target = temp->getNext();
 
@@ -381,27 +378,27 @@ bool LinkedList::empty(void)
 
 
 
-void LinkedList::printNodes(void)
+std::vector<int> LinkedList::toVector(void)
 {
 
 	if (head == NULL) {
 
-		std::cout << "EMPTY" << std::endl;
-
-		return ;
+		return std::vector<int>();
 
 	}
+
+	std::vector<int> vec;
 
 	Node* temp = head;
 
 	while (temp != NULL) {
 
-		std::cout << temp->getValue() << " ";
+		vec.push_back(temp->getValue());
 		temp = temp->getNext();
 
 	}
 
-	std::cout << std::endl;
+	return vec;
 
 }
 
@@ -419,6 +416,27 @@ void LinkedList::deleteAllNodes(void)
 		head = temp;
 
 	}
+
+}
+
+
+
+void LinkedList::reverse(void)
+{
+
+	Node* prev = NULL;
+	Node* current = head;
+
+	while (current != NULL) {
+
+		Node* next = current->getNext();
+		current->setNext(prev);
+		prev = current;
+		current = next;
+
+	}
+
+	head = prev;
 
 }
 
@@ -443,10 +461,5 @@ LinkedList::LinkedList(std::vector<int> vec)
 	}
 
 }
-
-
-
-
-
 
 

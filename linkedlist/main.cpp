@@ -1,124 +1,272 @@
 
+// unit testing
+
 #include "linkedlist.h"
 #include <iostream>
+#include <algorithm>
 #include <vector>
 
+template <typename T>
+void test(T a, T b, std::string testname) 
+{
 
+
+	if (a != b) {
+
+
+		throw (std::runtime_error(testname + " failed"));
+
+	}
+
+}
 
 int main(void)
 {
 
-	LinkedList linkedlst;
+	std::vector<int> nums = {1,2,3,4};
 
-	linkedlst.addNodeToHead(1);
-	linkedlst.printNodes();
+	// note since the constructor uses addNodeToTail
+	// the tests up to line 86
+	LinkedList linkedlst(nums);
 
-	linkedlst.deleteTailNode();
-	linkedlst.printNodes();
 
-	linkedlst.addNodeToTail(2);
-	linkedlst.printNodes();
+	std::vector<int> vec = linkedlst.toVector();
 
-	linkedlst.deleteHeadNode();
-	linkedlst.printNodes();
+	try {
 
-	linkedlst.addNodeToHead(100);
-	linkedlst.deleteHeadNode();
-	linkedlst.printNodes();
+		test(vec.size(), nums.size(), "Check return array same length as initial");
 
-	linkedlst.addNodeToTail(100);
-	linkedlst.deleteTailNode();
-	linkedlst.printNodes();
 
+		for (size_t i = 0; i < nums.size(); i++) {
+
+			test(vec[i], nums[i], "array items the same as initial");
+
+		}
 	
-	for (int i = 0; i < 1; i++) {
-
-		linkedlst.addNodeToTail(i);
-
-	}
-
-	linkedlst.deleteNode(6);
-
-	linkedlst.printNodes();
-
-	linkedlst.deleteValueAtIndex(0);
-
-	linkedlst.printNodes();
-
-	for (int i = 0; i < 100; i++) {
-
-		linkedlst.addNodeToHead(i);
-
-	}
-
-	for (int i = 0; i < 100; i++) {
 
 		linkedlst.deleteHeadNode();
 
-	}
+		vec = linkedlst.toVector();
 
-	std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+		for (size_t i = 0; i < nums.size() - 1; i++) {
 
-	linkedlst.printNodes();
+			test(vec[i], nums[i + 1], "deleteHeadNode test 1");
 
-	std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+		}
 
-	for (int i = 0; i < 10; i++) {
+		linkedlst.deleteHeadNode();
 
-		linkedlst.addNodeToTail(i);
+		vec = linkedlst.toVector();
 
-	}
+		for (size_t i = 0; i < nums.size() - 2; i++) {
 
-	for (int i = -1; i < 11; i++) {
+			test(vec[i], nums[i + 2], "deleteHeadNode test 2");
 
-		std::cout << linkedlst.atIndex(i) << " ";
+		}
+
+		linkedlst.deleteHeadNode();
+
+		vec = linkedlst.toVector();
+
+		for (size_t i = 0; i < nums.size() - 3; i++) {
+
+			test(vec[i], nums[i + 3], "deleteHeadNode test 3");
+
+		}
+
+		linkedlst.deleteHeadNode();
+
+		vec = linkedlst.toVector();
+
+		test(vec.empty(), std::vector<int>().empty(), "test if two vectors are empty");
+
+		linkedlst.deleteHeadNode();
+
+		vec = linkedlst.toVector();
+
+		test(vec.empty(), std::vector<int>().empty(), "test if trying to delete head node from already empty list fails");
+
+		// testing add node to head
+
+		std::vector<int> toreverse;
+
+		std::copy(nums.begin(), nums.end(), std::back_inserter(toreverse));
+
+		std::reverse(toreverse.begin(), toreverse.end());
+
+		for (int i : nums) {
+
+			linkedlst.addNodeToHead(i);
+
+		}
+
+		vec = linkedlst.toVector();
+
+		test(vec, toreverse, "testing addNodeToHead");
+
+		linkedlst.deleteTailNode();
+
+		vec = linkedlst.toVector();
+
+		for (size_t i = 0; i < nums.size() - 1; i++) {
+
+			test(vec[i], toreverse[i], "deleteTailNode");
+
+		}
+
+		linkedlst.deleteTailNode();
+
+		vec = linkedlst.toVector();
+
+		for (size_t i = 0; i < nums.size() - 2; i++) {
+
+			test(vec[i], toreverse[i], "deleteTailNode");
+
+		}
+
+
+		linkedlst.deleteTailNode();
+
+		vec = linkedlst.toVector();
+
+		for (size_t i = 0; i < nums.size() - 3; i++) {
+
+			test(vec[i], toreverse[i], "deleteTailNode");
+
+		}
+
+		linkedlst.deleteTailNode();
+
+		vec = linkedlst.toVector();
+
+		test(vec.empty(), true, "testing deleteTailNode");
+
+		linkedlst.deleteTailNode();
+
+		vec = linkedlst.toVector();
+
+		test(vec.empty(), true, "testing deleteTailNode for null");
+
+		// should be empty
+		linkedlst.insertNodeAtIndex(2, 1000);
+
+		vec = linkedlst.toVector();
+
+		test(vec.empty(), true, "insertNodeAtIndex for invalid index (should be empty)");
+
+		linkedlst.insertNodeAtIndex(1, 1000);
+
+		test(vec.empty(), true, "insertNodeAtIndex for invalid index (should be empty)");
+
+		linkedlst.insertNodeAtIndex(0, 123);
+
+		test(linkedlst.atIndex(0), 123, "insertNodeAtIndex and atIndex");
+
+		// should be able to insert a node at index 1
+		linkedlst.insertNodeAtIndex(1, 1234);
+
+		test(linkedlst.atIndex(1), 1234, "insertNodeAtIndex and atIndex");
+
+		linkedlst.insertNodeAtIndex(2, 12345);
+
+		test(linkedlst.atIndex(2), 12345, "insertNodeAtIndex and atIndex");
+
+		vec = linkedlst.toVector();
+
+		test(vec, std::vector<int>({123, 1234, 12345}), "insertNodeAtIndex in order?");
+
+
+		linkedlst.insertNodeAtIndex(1, 101);
+
+		vec = linkedlst.toVector();
+
+		test(vec, std::vector<int>({123, 101, 1234, 12345}), "insertNodeAtIndex in order?");
+
+		linkedlst.deleteValueAtIndex(0);
+
+		vec = linkedlst.toVector();
+
+		test(vec, std::vector<int>({101, 1234, 12345}), "deleteValueAtIndex");
+
+		linkedlst.deleteValueAtIndex(2);
+
+		vec = linkedlst.toVector();
+
+		test(vec, std::vector<int>({101, 1234}), "deleteValueAtIndex");
+
+		linkedlst.deleteValueAtIndex(0);
+		linkedlst.deleteValueAtIndex(0);
+
+		vec = linkedlst.toVector();
+
+		test(vec.empty(), true, "deleteValueAtIndex 1");
+
+		linkedlst.deleteValueAtIndex(0);
+
+		vec = linkedlst.toVector();
+
+		test(vec.empty(), true, "deleteValueAtIndex 2");
+
+		for (int i : nums) {
+
+			linkedlst.addNodeToTail(i);
+
+		}
+
+		linkedlst.reverse();
+
+		vec = linkedlst.toVector();
+
+		test(vec, toreverse, "reversing the linked list");
+
+		linkedlst.deleteNode(4);
+
+		vec = linkedlst.toVector();
+
+		test(vec, std::vector<int>({3,2,1}), "deleteNode");
+
+		linkedlst.deleteNode(1);
+
+		vec = linkedlst.toVector();
+
+		test(vec, std::vector<int>({3,2}), "deleteNode");
+
+		linkedlst.deleteNode(3);
+
+		vec = linkedlst.toVector();
+
+		test(vec, std::vector<int>({2}), "deleteNode");
+
+		linkedlst.deleteNode(2);
+
+		vec = linkedlst.toVector();
+
+		test(vec.empty(), true, "deleteNode");
+
+		linkedlst.deleteNode(1000);
+
+		vec = linkedlst.toVector();
+
+		test(vec.empty(), true, "deleteNode");
+
+
+				
+	} catch(std::runtime_error& e) {
+
+		std::cout << e.what() << std::endl;
+		linkedlst.deleteAllNodes();
+
+		return -1;
 
 	}
 
 	linkedlst.deleteAllNodes();
 
-	std::cout << std::endl;
-	
-
-	linkedlst.insertNodeAtIndex(0, 20);
-	linkedlst.printNodes();
-
-	linkedlst.insertNodeAtIndex(1, 50);
-	linkedlst.printNodes();
-
-	linkedlst.insertNodeAtIndex(0, 100);
-	linkedlst.printNodes();
-
-	linkedlst.insertNodeAtIndex(3, 200);
-	linkedlst.printNodes();
-
-	linkedlst.insertNodeAtIndex(1, 23);
-	linkedlst.printNodes();
-
-	linkedlst.insertNodeAtIndex(3, 32);
-	linkedlst.printNodes();
-
-	linkedlst.deleteHeadNode();
-	linkedlst.printNodes();
-
-	linkedlst.deleteTailNode();
-	linkedlst.printNodes();
-
-	linkedlst.deleteValueAtIndex(1);
-	linkedlst.printNodes();
-
-	linkedlst.deleteValueAtIndex(2);
-	linkedlst.printNodes();
-
-	linkedlst.deleteValueAtIndex(0);
-	linkedlst.printNodes();
-
-	linkedlst.deleteValueAtIndex(0);
-	linkedlst.printNodes();
+	test(linkedlst.empty(), true, "check if linked list knows when it's empty");
 
 
+	std::cout << "all tests passed" << std::endl;
 
-	//linkedlst.deleteAllNodes();
 
 	return 0;
 

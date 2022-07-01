@@ -6,7 +6,7 @@
 #include <vector>
 
 /*
-Tested implementation of a linked list.
+Tested implementation of a singly linked list.
 
 */
 
@@ -55,9 +55,11 @@ class LinkedList {
 
 		bool empty(void);
 
-		void printNodes(void);
+		std::vector<int> toVector(void);
 
 		void deleteAllNodes(void);
+
+		void reverse(void);
 
 };
 
