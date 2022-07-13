@@ -27,6 +27,8 @@ class BinaryTree {
 
 		void postorder(Node* node);
 
+		void levelorder(Node* node);
+
 		Node** getRoot(void);
 
 

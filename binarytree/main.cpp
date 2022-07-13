@@ -9,7 +9,7 @@ int main(void)
 
 	BinaryTree bt;
 
-	std::vector<int> vec{1,2,3,4,5,6,7,8,9,10,11,12};
+	std::vector<int> vec{0,1,2,3,4,5,6};
 
 	for (int i : vec) {
 
@@ -26,6 +26,10 @@ int main(void)
 	std::cout << std::endl;
 
 	bt.postorder(bt.root);
+
+	std::cout << std::endl;
+
+	bt.levelorder(bt.root);
 
 	std::cout << std::endl;
 

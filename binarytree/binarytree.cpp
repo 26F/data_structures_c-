@@ -118,6 +118,53 @@ void BinaryTree::postorder(Node* node)
 
 
 
+void BinaryTree::levelorder(Node* node)
+{
+
+
+	if (!(node)) {
+
+		return;
+
+	}
+
+
+	std::queue<Node*> process;
+	process.push(node);
+
+	while (!(process.empty())) {
+
+		int n = process.size();
+
+		for (int i = 0; i < n; i++) {
+
+			Node* current = process.front();
+			process.pop();
+
+			if (current->left) {
+
+				process.push(current->left);
+
+			}
+
+
+			if (current->right) {
+
+				process.push(current->right);
+
+			}
+
+
+			std::cout << current->value << " ";
+
+		}
+
+	}
+
+}
+
+
+
 Node** BinaryTree::getRoot(void)
 {
 
